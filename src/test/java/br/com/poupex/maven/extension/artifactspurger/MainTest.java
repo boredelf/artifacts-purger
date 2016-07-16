@@ -3,6 +3,7 @@ package br.com.poupex.maven.extension.artifactspurger;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import br.com.poupex.maven.extension.artifactspurger.util.FileCreator;
@@ -51,33 +52,26 @@ public class MainTest {
 		tearDown(dupeAppDir);
 	}
 
+	// TODO: Improve setUp and tearDown methods.
 	public List<File> setUp(File dupeAppDir) throws Exception {
 		if (!dupeAppDir.mkdir()) {
 			throw new Exception("Impossible to setup test: error while creating dir.");
 		}
 
-		FileCreator.createDirWithEmptyFile(new File(dupeAppDir, "1.0.375"));
-		FileCreator.createDirWithEmptyFile(new File(dupeAppDir, "1.0.190"));
-		FileCreator.createDirWithEmptyFile(new File(dupeAppDir, "1.0.41"));
-		FileCreator.createDirWithEmptyFile(new File(dupeAppDir, "1.0.40"));
-		FileCreator.createDirWithEmptyFile(new File(dupeAppDir, "1.0.39"));
-		FileCreator.createDirWithEmptyFile(new File(dupeAppDir, "1.0.38"));
-		FileCreator.createDirWithEmptyFile(new File(dupeAppDir, "1.0.31"));
-		FileCreator.createDirWithEmptyFile(new File(dupeAppDir, "1.0.27"));
-		FileCreator.createDirWithEmptyFile(new File(dupeAppDir, "1.0.1"));
+		List<File> versionsFiles = new ArrayList<>();
+		// TODO: Include versions with words like -SNAPSHOT, -BRANCH, -RC, etc.
+		List<String> versions = Arrays.asList(
+			"1.0.375", "1.0.190", "1.0.41", "1.0.40", "1.0.39",
+			"1.0.38", "1.0.31", "1.0.27", "1.0.1"
+		);
 
-		List<File> versions = new ArrayList<>();
-		versions.add(new File(dupeAppDir, "1.0.375"));
-		versions.add(new File(dupeAppDir, "1.0.190"));
-		versions.add(new File(dupeAppDir, "1.0.41"));
-		versions.add(new File(dupeAppDir, "1.0.40"));
-		versions.add(new File(dupeAppDir, "1.0.39"));
-		versions.add(new File(dupeAppDir, "1.0.38"));
-		versions.add(new File(dupeAppDir, "1.0.31"));
-		versions.add(new File(dupeAppDir, "1.0.27"));
-		versions.add(new File(dupeAppDir, "1.0.1"));
+		for (String version : versions) {
+			File versionFile = new File(dupeAppDir, version);
+			versionsFiles.add(versionFile);
+			FileCreator.createDirWithEmptyFile(versionFile);
+		}
 
-		return versions;
+		return versionsFiles;
 	}
 
 	public void tearDown(File dupeAppDir) throws IOException {
