@@ -1,4 +1,4 @@
-package br.com.poupex.maven.extension.artifactspurger;
+package br.com.poupex.maven.extension.artifactspurger.purger;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,24 +6,30 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import br.com.poupex.maven.extension.artifactspurger.util.FileCreator;
+import br.com.poupex.maven.extension.artifactspurger.tests.util.FileCreator;
 import org.apache.commons.io.FileUtils;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static br.com.poupex.maven.extension.artifactspurger.purger.ArtifactsPurger.NUM_VERSIONS_TO_KEEP_PROP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class MainTest {
+public class ArtifactsPurgerTest {
 
-	private static File resourcesDir = new File(MainTest.class.getResource("/").getFile());
+	public static final int numVersionsToKeep = 3;
+	private static File resourcesDir = new File(ArtifactsPurgerTest.class.getResource("/").getFile());
+
+	@BeforeClass
+	public static void beforeClass() {
+		System.setProperty(NUM_VERSIONS_TO_KEEP_PROP, "" + numVersionsToKeep);
+	}
 
 	@Test
 	public void findInstalledVersions_shouldBeEqual() throws Exception {
 		File dupeAppDir = new File(resourcesDir, "dupe-app-1");
 		List<File> versions = setUp(dupeAppDir);
-
-		assertEquals(versions, new Main().findInstalledVersions(dupeAppDir));
-
+		assertEquals(versions, new ArtifactsPurger().findInstalledVersions(dupeAppDir));
 		tearDown(dupeAppDir);
 	}
 
@@ -32,10 +38,10 @@ public class MainTest {
 		File dupeAppDir = new File(resourcesDir, "dupe-app-2");
 		List<File> versions = setUp(dupeAppDir);
 
-		int numVersionsToKeep = 3;
-		Main main = new Main();
-		main.setNumVersionsToKeep(numVersionsToKeep);
-		assertEquals(versions.subList(numVersionsToKeep, versions.size()), main.getVersionsToBeDeleted(versions));
+		assertEquals(
+			versions.subList(numVersionsToKeep, versions.size()),
+			new ArtifactsPurger().getVersionsToBeDeleted(versions)
+		);
 
 		tearDown(dupeAppDir);
 	}
@@ -45,9 +51,8 @@ public class MainTest {
 		File dupeAppDir = new File(resourcesDir, "dupe-app-3");
 		List<File> versions = setUp(dupeAppDir);
 
-		Main main = new Main();
-		main.setNumVersionsToKeep(3);
-		assertTrue(main.deleteVersions(main.getVersionsToBeDeleted(versions)));
+		ArtifactsPurger purger = new ArtifactsPurger();
+		assertTrue(purger.deleteVersions(purger.getVersionsToBeDeleted(versions)));
 
 		tearDown(dupeAppDir);
 	}
@@ -55,10 +60,10 @@ public class MainTest {
 	// TODO: Improve setUp and tearDown methods.
 	public List<File> setUp(File dupeAppDir) throws Exception {
 		if (!dupeAppDir.mkdir()) {
-			throw new Exception("Impossible to setup test: error while creating dir.");
+			throw new Exception("Impossible to setup test: error while setting up.");
 		}
 
-		List<File> versionsFiles = new ArrayList<>();
+		List<File> versionsFiles = new ArrayList<File>();
 		// TODO: Include versions with words like -SNAPSHOT, -BRANCH, -RC, etc.
 		List<String> versions = Arrays.asList(
 			"1.0.375", "1.0.190", "1.0.41", "1.0.40", "1.0.39",

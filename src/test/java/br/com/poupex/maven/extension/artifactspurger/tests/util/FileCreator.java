@@ -1,4 +1,4 @@
-package br.com.poupex.maven.extension.artifactspurger.util;
+package br.com.poupex.maven.extension.artifactspurger.tests.util;
 
 import java.io.File;
 
@@ -9,7 +9,7 @@ public abstract class FileCreator {
 			File emptyFile = new File(dir, "empty-file.jar");
 			return emptyFile.getParentFile().mkdirs() && emptyFile.createNewFile();
 		} catch (Exception e) {
-			e.printStackTrace();
+			e.printStackTrace(); // TODO Use logger.
 			return false;
 		}
 	}
