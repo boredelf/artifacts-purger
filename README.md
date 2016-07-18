@@ -18,3 +18,6 @@ Of course. Just define the property `artifactspurger.numVersionsToKeep`. E.g.:
 ```bash
 mvn install -Dartifactspurger.numVersionsToKeep=3
 ```
+
+### And if there's any problem?
+The extension keeps a log, located on `$MAVEN_HOME/log` (created on demand). By default, it logs only `WARNING` or above.
