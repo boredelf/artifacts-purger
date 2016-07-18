@@ -6,7 +6,7 @@
 
     <groupId>br.com.poupex.maven.extension</groupId>
     <artifactId>artifacts-purger</artifactId>
-    <version>1.1.1</version>
+    <version>1.9.0</version>
 
     <build>
         <plugins>
@@ -17,6 +17,7 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <plugin>

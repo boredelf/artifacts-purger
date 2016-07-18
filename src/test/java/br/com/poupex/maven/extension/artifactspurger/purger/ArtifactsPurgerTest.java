@@ -57,14 +57,12 @@ public class ArtifactsPurgerTest {
 		tearDown(dupeAppDir);
 	}
 
-	// TODO: Improve setUp and tearDown methods.
 	public List<File> setUp(File dupeAppDir) throws Exception {
 		if (!dupeAppDir.mkdir()) {
 			throw new Exception("Impossible to setup test: error while setting up.");
 		}
 
 		List<File> versionsFiles = new ArrayList<File>();
-		// TODO: Include versions with words like -SNAPSHOT, -BRANCH, -RC, etc.
 		List<String> versions = Arrays.asList(
 			"1.0.375", "1.0.190", "1.0.41", "1.0.40", "1.0.39",
 			"1.0.38", "1.0.31", "1.0.27", "1.0.1"

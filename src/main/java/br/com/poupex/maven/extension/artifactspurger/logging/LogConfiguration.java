@@ -1,29 +1,48 @@
 package br.com.poupex.maven.extension.artifactspurger.logging;
 
+import java.io.File;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+
+import static java.lang.System.getProperty;
+import static java.util.logging.Level.INFO;
+import static java.util.logging.Level.WARNING;
 
 public abstract class LogConfiguration {
 
-	public static Logger getLogger(Class clazz) {
+	private static final Integer MB = 1048576;
+	public static final Logger LOGGER = getLogger(LogConfiguration.class, "artifacts-purger", WARNING);
+
+	protected static Logger getLogger(Class clazz, String logFilename, Level level) {
 		Logger logger = Logger.getLogger(clazz.getName());
 
-		/* TODO: Test.
-		String mavenHome = System.getProperty("maven.home"); // TODO: Do I need maven session? Maybe.
-		File logDir = new File(mavenHome + "/log/artifacts-purger/");
-
+		File logDir = new File(getLogDir());
 		if (logDir.exists() || logDir.mkdirs()) {
 			try {
-				FileHandler fileHandler = new FileHandler(logDir.getAbsolutePath() + "/artifacts-purger.%u.%g.log", 10000000, 30, true);
-				fileHandler.setLevel(WARNING);
+				String logFullFilename = logDir.getAbsolutePath() + "/" + logFilename + ".%g.%u.log";
+				FileHandler fileHandler = new FileHandler(logFullFilename, 10 * MB, 30, true);
 				fileHandler.setFormatter(new SimpleFormatter());
+				fileHandler.setLevel(level);
 				logger.addHandler(fileHandler);
 			} catch (Exception e) {
-				logger.log(WARNING, "It wasn't possible to create log file.", e);
+				LOGGER.log(WARNING, "It wasn't possible to create log file.", e);
 			}
 		}
-		*/
 
 		return logger;
+	}
+
+	protected static String getLogDir() {
+		String logDir;
+		try {
+			logDir = getProperty("maven.home", ".");
+		} catch (Exception e) {
+			LOGGER.log(INFO, "It wasn't possible to get log's dir.", e);
+			logDir = ".";
+		}
+		return logDir + "/log";
 	}
 
 }

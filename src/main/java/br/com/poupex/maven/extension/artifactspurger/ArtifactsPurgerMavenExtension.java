@@ -10,17 +10,17 @@ import org.codehaus.plexus.component.annotations.Component;
 import static java.util.Arrays.asList;
 
 @Component(role = AbstractMavenLifecycleParticipant.class)
-public class MavenExtension extends AbstractMavenLifecycleParticipant {
+public class ArtifactsPurgerMavenExtension extends AbstractMavenLifecycleParticipant {
 
+	// TODO: test with modular project
 	@Override
 	public void afterProjectsRead(MavenSession session) throws MavenExecutionException {
 		super.afterProjectsRead(session);
 
 		if (CollectionsUtils.hasAny(session.getGoals(), asList("install", "site", "deploy"))) {
-			ArtifactsPurger.purge(
-				session.getLocalRepository()
-					.find(session.getCurrentProject().getArtifact())
-					.getFile().getParentFile().getParentFile()
+			ArtifactsPurger.purge(session.getLocalRepository()
+				.find(session.getCurrentProject().getArtifact())
+				.getFile().getParentFile().getParentFile()
 			);
 		}
 
