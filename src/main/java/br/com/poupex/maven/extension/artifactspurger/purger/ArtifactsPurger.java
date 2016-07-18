@@ -27,10 +27,10 @@ public class ArtifactsPurger {
 		purger.deleteVersions(versionsToBeDeleted);
 	}
 
-	protected List<File> findInstalledVersions(File groupIdDir) {
+	protected List<File> findInstalledVersions(File artifactIdDirectory) {
 		List<File> installedVersions = new ArrayList<File>();
 		try {
-			installedVersions.addAll(DirectoriesUtils.list(groupIdDir));
+			installedVersions.addAll(DirectoriesUtils.list(artifactIdDirectory));
 			Collections.sort(installedVersions, reverseOrder(new VersionFileComparator()));
 		} catch (Exception e) {
 			LOGGER.log(WARNING, "Error while listing installed versions.", e);
